@@ -1,0 +1,7 @@
+#Ignore Private Information
+password_cache.csv
+users.db
+.env
+
+#Ignore Build Files
+__pycache__

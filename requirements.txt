@@ -1,0 +1,8 @@
+msal
+requests
+pandas
+azure-identity
+azure-keyvault-secrets
+pyodbc
+sqlalchemy
+python-dotenv
