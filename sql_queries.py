@@ -27,3 +27,17 @@ def load_existing_prefixes(conn):
         FROM Existing_Prefixes
     """
     return pd.read_sql(query,conn)['Prefix'].tolist()
+
+def load_location_domains(conn):
+    query = f"""--sql
+        SELECT *
+        FROM Location_Domains
+    """
+    return pd.read_sql(query, conn)
+
+def load_locations(conn):
+    query = f"""--sql
+        SELECT *
+        FROM Locations
+    """
+    return pd.read_sql(query, conn)
