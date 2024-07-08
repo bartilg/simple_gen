@@ -1,12 +1,5 @@
 import pandas as pd
 
-def load_offices(conn):
-    query = f"""--sql
-        SELECT *
-        FROM Offices
-    """
-    return pd.read_sql(query, conn)
-
 def load_companies(conn):
     query = f"""--sql
         SELECT *

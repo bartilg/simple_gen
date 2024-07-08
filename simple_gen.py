@@ -191,7 +191,7 @@ def iter_users(access_token, users_path, pass_path, prefixes, conn):
         if row['companyAbbreviation'] in loc_domain_df['Company Abbreviation'].values:
             send_domain = loc_domain_df.loc[loc_domain_df['Location Code'] == row['locationCode'], 'Domain'].values[0]
         else:
-        #Assign domain based on company
+            #Assign domain based on company
             send_domain = company_df.loc[company_df['Abbreviation'] == row['companyAbbreviation'], 'Domain'].values[0]
         companyName = company_df.loc[company_df['Abbreviation'] == row['companyAbbreviation'], 'Name'].values[0]
         #Set defaults for manager and licenses

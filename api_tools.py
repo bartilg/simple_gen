@@ -54,7 +54,6 @@ def get_access_token(client_id, authority, client_secret, scope):
     # If the token is not available in cache, acquire a new one from Azure AD and save it to a variable
     if not token_result:
         token_result = client.acquire_token_for_client(scopes=scope)
-        print(token_result)
         access_token = token_result['access_token']
         print('New access token was acquired from Azure AD')
 
@@ -199,4 +198,3 @@ def get_users_by_name(access_token,firstName,lastName):
 
     paginate_json(data,headers,response_data)
     return response_data
-
