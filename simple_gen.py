@@ -61,7 +61,6 @@ def az_db_connect(driver,server,database,access_token):
     engine= create_engine('mssql+pyodbc://',creator=lambda: azure_conn)
     return engine
 
-
 def db_connect(access_token):
     """ Establishes a connection to a database described in the environment
 
@@ -177,8 +176,9 @@ def iter_users(access_token, users_path, pass_path, prefixes, conn):
 
     dept_names = load_department_names(conn)
 
-    office_df = load_offices(conn)
     company_df = load_companies(conn)
+    location_df = load_locations(conn)
+    loc_domain_df = load_location_domains(conn)
 
     pass_dict = {}
 
@@ -187,7 +187,12 @@ def iter_users(access_token, users_path, pass_path, prefixes, conn):
         #Generate UPN
         userPrincipalName = prefix + '@championsgh.com'
         #Generate Email Address
-        send_domain = company_df.loc[company_df['Abbreviation'] == row['companyAbbreviation'], 'Domain'].values[0]
+        #Check if domain is determined by location
+        if row['companyAbbreviation'] in loc_domain_df['Company Abbreviation'].values:
+            send_domain = loc_domain_df.loc[loc_domain_df['Location Code'] == row['locationCode'], 'Domain'].values[0]
+        else:
+            #Assign domain based on company
+            send_domain = company_df.loc[company_df['Abbreviation'] == row['companyAbbreviation'], 'Domain'].values[0]
         companyName = company_df.loc[company_df['Abbreviation'] == row['companyAbbreviation'], 'Name'].values[0]
         #Set defaults for manager and licenses
         manager = "NULL"
@@ -216,13 +221,14 @@ def iter_users(access_token, users_path, pass_path, prefixes, conn):
                             print("Invalid Department")
                             return
                         args.update({column: str(value)})
-                    case "Office":
-                        args.update({'officeLocation' : row[column], 
-                            'streetAddress': office_df.loc[office_df['Office'] == row['Office'], 'Address'].values[0],
-                            'city' : office_df.loc[office_df['Office'] == row['Office'], 'City'].values[0],
-                            'country' : office_df.loc[office_df['Office'] == row['Office'], 'Country'].values[0],
-                            'state' : office_df.loc[office_df['Office'] == row['Office'], 'State'].values[0],
-                            'postalCode' : str(office_df.loc[office_df['Office'] == row['Office'], 'Zip'].values[0])})
+                    case "locationCode":
+                        office_name = location_df.loc[location_df['Location Code'] == row[column], 'Office'].values[0]
+                        args.update({'officeLocation' : office_name, 
+                            'streetAddress': location_df.loc[location_df['Office'] == office_name, 'Address'].values[0],
+                            'city' : location_df.loc[location_df['Office'] == office_name, 'City'].values[0],
+                            'country' : location_df.loc[location_df['Office'] == office_name, 'Country'].values[0],
+                            'state' : location_df.loc[location_df['Office'] == office_name, 'State'].values[0],
+                            'postalCode' : str(location_df.loc[location_df['Office'] == office_name, 'Zip'].values[0])})
                     case "manager":
                         #cache manager value since its
                         manager=row['manager']
@@ -252,7 +258,7 @@ def iter_users(access_token, users_path, pass_path, prefixes, conn):
 
     dict_to_csv(pass_path, pass_dict)
 
-def run():
+def run():  
     #Get Access Token for Graph API
     client_secret=get_vault_secret(tenant_id=os.getenv("TENANT_ID"), vault_url=os.getenv("VAULT_URL"),secret_name=os.getenv("VAULT_SECRET_NAME"))
     access_token = 'Bearer ' + get_access_token(os.getenv("CLIENT_ID"), os.getenv("AUTHORITY"),client_secret, [os.getenv("SCOPE")])

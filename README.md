@@ -16,8 +16,8 @@
 4. You must also Install the Microsoft ODBC Driver to connect the the sql database: [Download MS ODBC Here](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver16)
    
 ## How to Use
-1. Edit the information for the users you would like to create in **user_list.csv**
-2. Make sure you save user_list.csv before running the script
+1. Edit the information for the users you would like to create in **users.csv**
+2. Make sure you save users.csv before running the script
 3. Open your terminal in the root directory and run the script with the following command:
     ```PowerShell
     Python simple_gen.py

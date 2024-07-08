@@ -1,2 +1,2 @@
-lastName,firstName,displayName,officeOrField,officePhone,mobilePhone,Office,companyAbbreviation,department,jobTitle,employeeId,manager
-Person,Fake,Fake Person,Office,,,Office Name,ABBR,Finance,Temp,abc123,fakeboss@example.com
+lastName,firstName,displayName,officeOrField,officePhone,mobilePhone,locationCode,companyAbbreviation,department,jobTitle,employeeId,manager
+Person,Fake,Fake Person,Field,,,LOVE,SWAN,Customer Service,Client Services Representative,12345,
